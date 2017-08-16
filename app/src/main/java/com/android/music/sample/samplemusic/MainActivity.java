@@ -173,9 +173,9 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
-            /*Intent detail = new Intent(this, iTunesDetail.class);
+            Intent detail = new Intent(this, MusicDetail.class);
             detail.putExtra("item",iTunesList.get(position));
-            startActivity(detail);*/
+            startActivity(detail);
         });
     }
 

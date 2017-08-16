@@ -5,4 +5,5 @@
     <string name="search_hint">Search for a song or artist</string>
     <string name="result_empty">No match was found for</string>
     <string name="network_error">An error occurred. Check network connectivity.</string>
+    <string name="music_detail_title">Song Sample and Details</string>
 </resources>
