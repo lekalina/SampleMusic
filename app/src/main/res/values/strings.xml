@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">My Sample Music</string>
+    <string name="welcome_message">Welcome to my code sample!\nHere you can search for music from the itunes store\nand listen to those music samples.</string>
+    <string name="search_button_text">GO</string>
+    <string name="search_hint">Search for a song or artist</string>
+    <string name="result_empty">No match was found for</string>
+    <string name="network_error">An error occurred. Check network connectivity.</string>
+</resources>
