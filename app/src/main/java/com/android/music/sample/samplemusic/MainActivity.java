@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -17,14 +16,11 @@ import android.widget.TextView;
 
 import com.android.music.sample.samplemusic.Network.HttpConnectionObject;
 import com.android.music.sample.samplemusic.Network.iTunesItem;
-import com.android.music.sample.samplemusic.Network.iTunesItemParser;
+import com.android.music.sample.samplemusic.Network.iTunesResponse;
+import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +29,6 @@ public class MainActivity extends AppCompatActivity {
 
     protected ImageLoader imageLoader = ImageLoader.getInstance();
 
-    Boolean success = true;
-    Boolean nonEmptyResult = false;
     public List<iTunesItem> iTunesList = new ArrayList<>();
     ListView listView;
 
@@ -72,9 +66,7 @@ public class MainActivity extends AppCompatActivity {
                 iTunesList.removeAll(iTunesList);
             }
             String testing = search_text.getText().toString();
-            Log.d("TESTING: "," search text = "+testing);
             search_query = formatSearchQuery(testing);
-            Log.d("TESTING: "," query text = "+search_query);
             search_text.setText("");
             hideSoftKeyboard(search_text);
             new getData().execute(null,null);
@@ -104,53 +96,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //-- secondary thread for making network request
-    public class getData extends AsyncTask<String, Void, String> {
+    public class getData extends AsyncTask<String, Void, Boolean> {
 
         @Override
-        protected String doInBackground(String... urls) {
+        protected Boolean doInBackground(String... urls) {
 
             HttpConnectionObject networkConnection = new HttpConnectionObject();
 
             String request = networkConnection.setUpSimpleRequest(itunes_url+search_term+search_query+media_key+music_value+clean_music, null, "GET");
 
-            JSONObject response = networkConnection.getResponseJsonObject(request);
+            Gson gson = new Gson();
 
-            if(response != null) {
+            iTunesResponse items = gson.fromJson(request,iTunesResponse.class);
 
-                try {
+            iTunesList = items.getItems();
 
-                    int count = response.getInt("resultCount");
-
-                    //nonEmptyResult = count > 0;
-
-                    JSONArray jsonArray = response.getJSONArray("results");
-                    Log.d("TESTING: ", "result array = "+jsonArray);
-
-                    for(int i=0;i<count;i++){
-
-                        JSONObject item = jsonArray.getJSONObject(i);
-                        iTunesItem itunes = iTunesItemParser.getItunesItemFromJson(item);
-                        iTunesList.add(itunes);
-
-                    }
-
-                    success = count > 0;
-
-
-                } catch (JSONException e) {
-                    success = false;
-                    e.printStackTrace();
-                }
-
-            } else {
-
-                success = false;
-            }
-
-            return null;
+            return items.getCount() > 0;
         }
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(Boolean success) {
             if (!success) {
                 final String error_message = getString(R.string.result_empty) + search_query;
                 result_error.setText(error_message);

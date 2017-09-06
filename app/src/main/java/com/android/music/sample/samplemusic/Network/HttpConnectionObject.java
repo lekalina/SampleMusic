@@ -88,42 +88,4 @@ public class HttpConnectionObject {
 
         return response;
     }
-
-    public JSONObject getResponseJsonObject(String response) {
-
-        JSONObject jObj = null;
-
-        try {
-
-            jObj = new JSONObject(response);
-
-        } catch (JSONException e) {
-
-            e.printStackTrace();
-        }
-        return jObj;
-
-    }
-
-    public JSONArray getResponseJsonArray(String response) {
-
-        JSONArray jArray = null;
-
-        try {
-
-            jArray = new JSONArray(response);
-
-        } catch (JSONException e) {
-
-            e.printStackTrace();
-        }
-
-        return jArray;
-
-    }
-
-    public String getResponseString(String response) {
-
-        return response;
-    }
 }
